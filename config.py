@@ -165,9 +165,9 @@ async def settings(request:Request):
         else:
             savejson[k] = tonone(tonumber(v[0]))
     print(savejson)
-    with open('output.json','w') as file:
+    with open('settings.json','w') as file:
         file.write(json.dumps(savejson))
-
+    request.app.shutdown()
     return 'Rebooting', 200, {'Content-Type': 'text/html'}
 
 @app.route('/shutdown')
