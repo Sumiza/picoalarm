@@ -1,0 +1,35 @@
+{
+    "wifissid": null,
+    "wifipass": null,
+    "wifihostname": null,
+    "wifiled": 16,
+    "wifitimeout": 30,
+    "sensors": {
+      "16": "Front Door",
+      "17": "Back Door",
+      "18": "Front Motion Sensor",
+      "19": "Back Motion Sensor",
+      "20": "Side Door",
+      "21": null,
+      "22": null,
+      "26": null,
+      "27": null,
+      "28": null
+    },
+    "users": [
+      {"pin":"1234", "name": "Test User","phonenr": "+19055555555","admin": false},
+      {"pin":"4321", "name": "Test Admin","phonenr": "+19055555555","admin": true}
+    ],
+    "beeppin": 10,
+    "greenled": 9,
+    "redled": 8,
+    "hornpin": 15,
+    "pintime": 20,
+    "doording": 16,
+    "telnyxposturl": "https://api.telnyx.com/v2/",
+    "telnyxbearer": "Bearer KEY018EBEDA6...",
+    "telnyxgeturl": "https://webhookbin.net/v1/bin/1.....",
+    "telnyxalarmaudio": "https://example.com/alarm.mp3",
+    "telnyxcallid": "246844....",
+    "telyxfromnumber": "+19055555555"
+  }
