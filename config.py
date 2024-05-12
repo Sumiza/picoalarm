@@ -1,4 +1,4 @@
-# VERSION 0.011
+# VERSION 0.012
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/config.py
 
 from microdot import Microdot, Request
