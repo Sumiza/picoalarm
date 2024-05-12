@@ -1,4 +1,4 @@
-# VERSION 0.01
+# VERSION 0.011
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/config.py
 
 from microdot import Microdot, Request
@@ -67,8 +67,8 @@ def makehtml():
         <label for="">Wifi ssid: </label><br><input name="wifissid" type="text" placeholder="wifi name" value="{ifnone(localdata.SSID)}">
         <br> <label for="">Wifi password: </label><br><input name="wifipass" type="text" placeholder="wifi password" value="{ifnone(localdata.PASSWORD)}">
         <br> <label for="">Hostname: </label><br><input name="wifihostname" type="text" placeholder="hostname for alarm" value="{ifnone(localdata.HOSTNAME)}">
-        <br> <label for="">Wifi led: </label><br><input name="wifiled" type="number" placeholder="" value={ifnone(localdata.WIFILED)}>
-        <br> <label for="">Wifi timeout: </label><br><input name="wifitimeout" type="number" placeholder="" value="{ifnone(localdata.WIFITIMEOUT)}">
+        <br> <label for="">Wifi led: </label><br><input name="wifiled" type="text" placeholder="LED" value={ifnone(localdata.WIFILED)}>
+        <br> <label for="">Wifi timeout: </label><br><input name="wifitimeout" type="number" placeholder="20" value="{ifnone(localdata.WIFITIMEOUT)}">
 
         <h4>Sensor Settings:</h4>
         """
@@ -107,7 +107,6 @@ def makehtml():
             <br> <label for="">Green LED: </label><br><input name="greenled" type="number" placeholder="16" value={ifnone(localdata.GREENLED)}>
             <br> <label for="">Horn Pin: </label><br><input name="hornpin" type="number" placeholder="16" value={ifnone(localdata.HORNPIN)}>
             <br> <label for="">Beep Pin: </label><br><input name="beeppin" type="number" placeholder="16" value={ifnone(localdata.BEEPPIN)}>
-            <br> <label for="">Wifi LED: </label><br><input name="wifiled" type="number" placeholder="16" value={ifnone(localdata.WIFILED)}>
 
         <br><br>
         <br> <label for="">PIN: </label><input name="keypin" type="text" placeholder="1234" required><br><br>
@@ -167,7 +166,7 @@ async def settings(request:Request):
             savejson[k] = tonone(tonumber(v[0]))
     print(savejson)
     with open('output.json','w') as file:
-        file.write(json.dumps(savejson,indent=6))
+        file.write(json.dumps(savejson))
 
     return 'Rebooting', 200, {'Content-Type': 'text/html'}
 
