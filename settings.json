@@ -2,7 +2,7 @@
     "wifissid": null,
     "wifipass": null,
     "wifihostname": null,
-    "wifiled": 16,
+    "wifiled": "LED",
     "wifitimeout": 30,
     "sensors": {
       "16": "Front Door",

@@ -29,6 +29,7 @@ class LocalSettings():
             self.ALARMAUDIO = jfile.get('telnyxalarmaudio')
             self.TELNYXPOSTURL = jfile.get('telnyxposturl')
             self.TELNYXTOKEN = jfile.get('telnyxbearer')
+            self.TELNYXPOSTHEADER = {'Authorization': self.TELNYXTOKEN}
             self.TELNYXGETURL = jfile.get('telnyxgeturl')
 
 localdata = LocalSettings()
@@ -193,32 +194,32 @@ if dipswitch[4].value() == 0:
         async def sendmessage(self,message,number):
             logger(f'trigger sendmessage {message} {number}')
             message = {
-                'from':localdata.FROMNUMBER,
+                'from':localdata.TELNYXFROMNUMBER,
                 'to':number,
                 'text':message
             }
             try:
                 await aiourlrequest.post(
-                    localdata.POSTURL+'messages',
+                    localdata.TELNYXPOSTURL+'messages',
                     json=message,
-                    headers=localdata.POSTHEADERS,
+                    headers=localdata.TELNYXPOSTHEADER,
                     readlimit=50)
             except: pass
 
         async def call(self,number):
             logger(f'trigger call {number}')
             message = {
-                'from':localdata.FROMNUMBER,
+                'from':localdata.TELNYXFROMNUMBER,
                 'to':number,
-                'connection_id':localdata.TELNYXCALLID,
+                'connection_id':str(localdata.TELNYXCALLID),
                 'time_limit_secs': 30,
                 'audio_url': localdata.ALARMAUDIO
             }
             try:
                 await aiourlrequest.post(
-                    localdata.POSTURL+'calls',
+                    localdata.TELNYXPOSTURL+'calls',
                     json=message,
-                    headers=localdata.POSTHEADERS,
+                    headers=localdata.TELNYXPOSTHEADER,
                     readlimit=50)
             except: pass
         
@@ -394,17 +395,5 @@ if dipswitch[4].value() == 0:
                         reset() # something went very wrong
                 await asyncio.sleep(5)
 
-            # poolkey.done()
-            # runme = [self.poolkeypad()]
-            # await asyncio.gather(
-            #     self.poolkeypad()
-            #     ) # run forever
-
     alarm = Alarm('4x4')
     asyncio.run(alarm.main())
-
-        # async def armtoggle(self,keypass,armtype):
-        #     if self.armed is False:
-        #         self.arm(keypass,armtype)
-        #     elif self.armed is True:
-        #         self.disarm(keypass,armtype)
