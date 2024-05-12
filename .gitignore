@@ -6,3 +6,5 @@ settime.py
 update.py
 upload.py
 wifi.py
+.gitignore
+tests/
