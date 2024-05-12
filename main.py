@@ -2,7 +2,36 @@
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/main.py
 
 from machine import Pin, reset
-import localdata
+import json
+
+class LocalSettings():
+    def __init__(self) -> None:
+        with open('settings.json','r') as file:
+            jfile = json.loads(file.read())
+            jfile:dict
+            self.SSID = jfile.get('wifissid')
+            self.PASSWORD = jfile.get('wifipass')
+            self.HOSTNAME = jfile.get('wifihostname')
+            self.WIFILED = jfile.get('wifiled')
+            self.WIFITIMEOUT = jfile.get('wifitimeout')
+
+            self.SENSORS = jfile.get('sensors')
+            self.GREENLED = jfile.get('greenled')
+            self.REDLED = jfile.get('redled')
+            self.BEEPPIN = jfile.get('beeppin')
+            self.HORNPIN = jfile.get('hornpin')
+            self.PINTIME = jfile.get('pintime')
+            self.DOORDING = jfile.get('doording')
+            self.USERS = jfile.get('users')
+
+            self.TELNYXFROMNUMBER = jfile.get('telyxfromnumber')
+            self.TELNYXCALLID = jfile.get('telnyxcallid')
+            self.ALARMAUDIO = jfile.get('telnyxalarmaudio')
+            self.TELNYXPOSTURL = jfile.get('telnyxposturl')
+            self.TELNYXTOKEN = jfile.get('telnyxbearer')
+            self.TELNYXGETURL = jfile.get('telnyxgeturl')
+
+localdata = LocalSettings()
 
 dipswitch = dict()
 
@@ -29,12 +58,12 @@ if dipswitch[1].value() == 0:
         import update
         update.updateall()
     
-    if dipswitch[4].value() == 0 and wifi.isconnected():
-        import upload
-        upload.run()
+    if dipswitch[3].value() == 0 and wifi.isconnected():
+        import config
+        config.run()
         reset()
 
-if dipswitch[3].value() == 0:
+if dipswitch[4].value() == 0:
     import time
     import asyncio
     import aiourlrequest

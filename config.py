@@ -1,3 +1,6 @@
+# VERSION 0.01
+# URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/config.py
+
 from microdot import Microdot, Request
 import json
 app = Microdot()
@@ -177,4 +180,4 @@ def run(port=80,debug=True):
     app.run(debug=debug,port=port)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=80)
+    app.run(debug=False, port=80)
