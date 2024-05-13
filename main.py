@@ -1,4 +1,4 @@
-# VERSION 0.51
+# VERSION 0.52
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/main.py
 
 from machine import Pin, reset
@@ -377,6 +377,7 @@ if dipswitch[4].value() == 0:
                         self.ledgreen(True)
             except: 
                 self.armed = False # first run with no last file
+                self.ledgreen(True)
                 self.last = 'No last status found'
 
             logger(f"Starting {self.armed}")
