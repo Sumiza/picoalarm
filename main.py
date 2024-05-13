@@ -1,4 +1,4 @@
-# VERSION 0.52
+# VERSION 0.53
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/main.py
 
 from machine import Pin, reset
@@ -39,6 +39,14 @@ dipswitch = dict()
 for switch, pin in enumerate([11,12,13,14]):
     dipswitch[switch+1] = Pin(pin,Pin.IN,Pin.PULL_UP)
 
+forceconfig = False
+try:
+    with open('forceconfig','r') as file:
+        forceconfig = True
+    from os import remove
+    remove('forceconfig')
+except: pass
+
 if dipswitch[1].value() == 0:
     from wifi import Wifi
     wifi = Wifi(localdata.SSID,
@@ -51,15 +59,28 @@ if dipswitch[1].value() == 0:
     if wifi.isconnected():
         try:
             import settime
-            settime.settime()
-        except:
-            pass # dont need time
+            settime.settime(retry = 5, backup = True)
+        except: pass # dont need time
 
     if dipswitch[2].value() == 0 and wifi.isconnected():
         import update
         update.updateall()
-    
-    if dipswitch[3].value() == 0 and wifi.isconnected():
+
+    if (dipswitch[3].value() == 0 and wifi.isconnected()) or forceconfig:
+        import config
+        config.run()
+        reset()
+
+elif dipswitch[1].value() == 1:
+    import network
+    wifi = network.WLAN(network.AP_IF)
+    wifi.config(hostname="PicoAlarm",key='AlarmPico1234')
+    wifi.active(True)
+
+    while wifi.active is False:
+        pass
+
+    if (dipswitch[3].value() == 0 and wifi.isconnected()) or forceconfig:
         import config
         config.run()
         reset()
@@ -287,7 +308,7 @@ if dipswitch[4].value() == 0:
                     self.configreboot()
                     
         def configreboot(self):
-            with open('configme','w') as file:
+            with open('forceconfig','w') as file:
                 file.write('config')
                 reset()
 
@@ -325,6 +346,7 @@ if dipswitch[4].value() == 0:
 
             await asyncio.sleep(localdata.PINTIME/2) # trigger before pin trigger
             while True:
+                checksleep = 30
                 try:
                     res = await aiourlrequest.aiourlrequest(localdata.TELNYXGETURL)
                     res = res.json()
@@ -332,6 +354,7 @@ if dipswitch[4].value() == 0:
                     logger(res)
                     if res is None:
                         continue
+                    checksleep = 1
                     parsed = parsesms(res)
                     if parsed is None:
                         continue
@@ -362,7 +385,7 @@ if dipswitch[4].value() == 0:
                     logger(e) # connection and json issues
                     pass
                 finally:
-                    await asyncio.sleep(30)
+                    await asyncio.sleep(checksleep)
                         
         async def main(self):
             try:

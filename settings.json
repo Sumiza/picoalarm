@@ -1,7 +1,7 @@
 {
     "wifissid": null,
     "wifipass": null,
-    "wifihostname": null,
+    "wifihostname": "PicoAlarm",
     "wifiled": "LED",
     "wifitimeout": 30,
     "sensors": {
