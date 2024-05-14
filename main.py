@@ -221,12 +221,14 @@ if dipswitch[4].value() == 0:
                 'text':message
             }
             try:
-                await aiourlrequest.post(
+                res = await aiourlrequest.post(
                     localdata.TELNYXPOSTURL+'messages',
                     json=message,
                     headers=localdata.TELNYXPOSTHEADER,
                     readlimit=50)
-            except: pass
+                logger(res.text)
+            except Exception as e:
+                logger(e)
 
         async def call(self,number):
             logger(f'trigger call {number}')
@@ -238,12 +240,14 @@ if dipswitch[4].value() == 0:
                 'audio_url': localdata.ALARMAUDIO
             }
             try:
-                await aiourlrequest.post(
+                res = await aiourlrequest.post(
                     localdata.TELNYXPOSTURL+'calls',
                     json=message,
                     headers=localdata.TELNYXPOSTHEADER,
                     readlimit=50)
-            except: pass
+                logger(res.text)
+            except Exception as e:
+                logger(e)
         
         async def scansensors(self) -> None|int:
             for pin, pinvalue in self.sensorpins.items():
