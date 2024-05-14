@@ -90,6 +90,7 @@ if dipswitch[4].value() == 0:
     import asyncio
     import aiourlrequest
     from matrixkeypad import MatrixKeypad
+    import gc
 
     level = 1
     def logger(data):
@@ -180,6 +181,7 @@ if dipswitch[4].value() == 0:
             logger(f'writestate {self.last}')
             with open('last','w') as file:
                 file.write(self.last)
+            gc.collect()
 
         async def notifyadmins(self):
             for values in localdata.USERS.values():
@@ -229,6 +231,7 @@ if dipswitch[4].value() == 0:
                 logger(res.text)
             except Exception as e:
                 logger(e)
+            gc.collect()
 
         async def call(self,number):
             logger(f'trigger call {number}')
@@ -248,6 +251,7 @@ if dipswitch[4].value() == 0:
                 logger(res.text)
             except Exception as e:
                 logger(e)
+            gc.collect()
         
         async def scansensors(self) -> None|int:
             for pin, pinvalue in self.sensorpins.items():
@@ -391,6 +395,7 @@ if dipswitch[4].value() == 0:
                     pass
                 finally:
                     await asyncio.sleep(checksleep)
+                    gc.collect()
                         
         async def main(self):
             try:
