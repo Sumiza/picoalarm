@@ -1,4 +1,4 @@
-# VERSION 0.013
+# VERSION 0.14
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/config.py
 
 from microdot import Microdot, Request
@@ -168,6 +168,9 @@ async def settings(request:Request):
             pass
         else:
             savejson[k] = tonone(tonumber(v[0]))
+
+    savejson['telnyxposturl'] = localdata.TELNYXPOSTURL
+
     with open('settings.json','w') as file:
         file.write(json.dumps(savejson))
     request.app.shutdown()
