@@ -1,4 +1,4 @@
-# VERSION 0.53
+# VERSION 0.54
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/main.py
 
 from machine import Pin, reset
