@@ -16,10 +16,10 @@
       "27": null,
       "28": null
     },
-    "users": [
-      {"pin":"1234", "name": "Test User","phonenr": "+19055555555","admin": false},
-      {"pin":"4321", "name": "Test Admin","phonenr": "+19055555555","admin": true}
-    ],
+    "users": {
+      "1234": {"name": "Testuser","phonenr": "+19055555555","admin": false},
+      "4321": {"name": "Test Admin","phonenr": "+190555555551","admin": true}
+    },
     "beeppin": 10,
     "greenled": 9,
     "redled": 8,
