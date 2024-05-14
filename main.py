@@ -109,6 +109,7 @@ if dipswitch[4].value() == 0:
             # self.sensorpins = {sensor:Pin(sensor,Pin.IN,Pin.PULL_UP) for sensor,name in localdata.SENSORS.items()}
             self.sensorpins = dict()
             for sensor,name in localdata.SENSORS.items():
+                sensor = int(sensor)
                 if name is not None:
                     self.sensorpins[sensor] = (Pin(sensor,Pin.IN,Pin.PULL_UP))
             self.greenled = Pin(localdata.GREENLED,Pin.OUT,value=0)
@@ -175,15 +176,15 @@ if dipswitch[4].value() == 0:
         def writestate(self,arm,keypass,armtype):
             now = time.localtime()
             humantime =  f'{now[3]:02d}:{now[4]:02d} {now[1]:02d}/{now[2]:02d}/{now[0]}'
-            self.last = f'Alarm {arm} by {localdata.USERS[keypass]['Name']} at {humantime} via {armtype}'
+            self.last = f'Alarm {arm} by {localdata.USERS[keypass]['name']} at {humantime} via {armtype}'
             logger(f'writestate {self.last}')
             with open('last','w') as file:
                 file.write(self.last)
 
         async def notifyadmins(self):
             for values in localdata.USERS.values():
-                if values['Admin'] is True:
-                    await self.sendmessage(self.last,values['Phonenr'])
+                if values['admin'] is True:
+                    await self.sendmessage(self.last,values['phonenr'])
 
         async def trigger(self,whichpin):
             logger(f'trigger {whichpin}')
@@ -207,10 +208,10 @@ if dipswitch[4].value() == 0:
         
         async def sendalarm(self,whichpin):
             for values in localdata.USERS.values():
-                if values['Admin'] is True:
-                    logger(f'sendalarm to {values['Phonenr']}')
-                    await self.sendmessage(f"Alarm trigged on {localdata.SENSORS[whichpin]}",values['Phonenr'])
-                    await self.call(values['Phonenr'])
+                if values['admin'] is True:
+                    logger(f'sendalarm to {values['phonenr']}')
+                    await self.sendmessage(f"Alarm trigged on {localdata.SENSORS[whichpin]}",values['phonenr'])
+                    await self.call(values['phonenr'])
         
         async def sendmessage(self,message,number):
             logger(f'trigger sendmessage {message} {number}')
@@ -336,10 +337,10 @@ if dipswitch[4].value() == 0:
                 if self.checkkey(parsed['passkey']) is None:
                     logger('failed key')
                     return False
-                if localdata.USERS[parsed['passkey']]['Admin'] is not True:
+                if localdata.USERS[parsed['passkey']]['admin'] is not True:
                     logger('failed admin')
                     return False
-                if localdata.USERS[parsed['passkey']]['Phonenr'] != parsed['fromnr']:
+                if localdata.USERS[parsed['passkey']]['phonenr'] != parsed['fromnr']:
                     logger('failed from nr')
                     return False
                 return True
