@@ -1,4 +1,4 @@
-# VERSION 0.012
+# VERSION 0.013
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/config.py
 
 from microdot import Microdot, Request
@@ -71,26 +71,37 @@ def makehtml():
         <br> <label for="">Wifi timeout: </label><br><input name="wifitimeout" type="number" placeholder="20" value="{ifnone(localdata.WIFITIMEOUT)}">
 
         <h4>Sensor Settings:</h4>
+        <br> <label for="">Sensor 16: </label><input name="sensor16" type="text" placeholder="Where is the sensor" value="{ifnone(localdata.SENSORS['16'])}">
+        <br> <label for="">Sensor 17: </label><input name="sensor17" type="text" placeholder="Where is the sensor" value="{ifnone(localdata.SENSORS['17'])}">
+        <br> <label for="">Sensor 18: </label><input name="sensor18" type="text" placeholder="Where is the sensor" value="{ifnone(localdata.SENSORS['18'])}">
+        <br> <label for="">Sensor 19: </label><input name="sensor19" type="text" placeholder="Where is the sensor" value="{ifnone(localdata.SENSORS['19'])}">
+        <br> <label for="">Sensor 20: </label><input name="sensor20" type="text" placeholder="Where is the sensor" value="{ifnone(localdata.SENSORS['20'])}">
+        <br> <label for="">Sensor 21: </label><input name="sensor21" type="text" placeholder="Where is the sensor" value="{ifnone(localdata.SENSORS['21'])}">
+        <br> <label for="">Sensor 22: </label><input name="sensor22" type="text" placeholder="Where is the sensor" value="{ifnone(localdata.SENSORS['22'])}">
+        <br> <label for="">Sensor 26: </label><input name="sensor26" type="text" placeholder="Where is the sensor" value="{ifnone(localdata.SENSORS['26'])}">
+        <br> <label for="">Sensor 27: </label><input name="sensor27" type="text" placeholder="Where is the sensor" value="{ifnone(localdata.SENSORS['27'])}">
+        <br> <label for="">Sensor 28: </label><input name="sensor28" type="text" placeholder="Where is the sensor" value="{ifnone(localdata.SENSORS['28'])}">
         """
-    for sen in localdata.SENSORS.items():
-        res += f'<br> <label for="">Sensor {sen[0]}: </label><input name="sensor{sen[0]}" type="text" placeholder="Where is the sensor" value="{ifnone(sen[1])}">\n'
-    
-    numberofusers = len(localdata.USERS)
+
     res += '<h4>User Settings:</h4>'
-    for count in range(numberofusers+5):
-        try:
-            user = localdata.USERS[count]
-        except:
-            user = {}
+    for key, value in localdata.USERS.items():
+
         def isadmin(admin):
             if admin:
                 return 'checked'
             return ''
         res += f'''
-        <label for="">Name: </label><input name="username_{count}" type="text" placeholder="User Name" value="{ifnone(user.get('name'))}">
-        <label for="">Pin: </label><input name="userkey_{count}" type="text" placeholder="1234" value="{ifnone(user.get('pin'))}">
-        <label for="">Phone Number: </label><input name="userphone_{count}" type="text" placeholder="+19055555555" value="{ifnone(user.get('phonenr'))}">
-        <label for="">Admin</label> <input type="checkbox" name="useradmin_{count}" value="admin" {isadmin(user.get('admin'))}> <br>
+        <label for="">Name: </label><input name="user_{key}" type="text" placeholder="User Name" value="{ifnone(value.get('name'))}">
+        <label for="">Pin: </label><input name="user_{key}" type="text" placeholder="1234" value="{ifnone(key)}">
+        <label for="">Phone Number: </label><input name="user_{key}" type="text" placeholder="+19055555555" value="{ifnone(value.get('phonenr'))}">
+        <label for="">Admin</label> <input type="checkbox" name="user_{key}" value="admin" {isadmin(value.get('admin'))}> <br>
+        '''
+    for i in range(5):
+        res += f'''
+        <label for="">Name: </label><input name="user_blank{i}" type="text" placeholder="User Name" value="">
+        <label for="">Pin: </label><input name="user_blank{i}" type="text" placeholder="1234" value="">
+        <label for="">Phone Number: </label><input name="user_blank{i}" type="text" placeholder="+19055555555" value="">
+        <label for="">Admin</label> <input type="checkbox" name="user_blank{i}" value="admin"> <br>
         '''
     res += f'''
         <h4>Telnyx Settings:</h4>
@@ -116,22 +127,21 @@ def makehtml():
     return res
 
 def checkpin(pin):
-    for userdata in localdata.USERS:
-        if pin == userdata['pin'] and userdata['admin'] is True:
+    if pin in localdata.USERS:
+        if localdata.USERS[pin]['admin'] is True:
             return True
     return False
 
 @app.route('/',methods=['GET','POST'])
 async def index(request:Request):
     if request.method == 'POST' and request.form:
-            if checkpin(request.form.get('keypin')):
-                return makehtml(), 200, {'Content-Type': 'text/html'}
-
+        if checkpin(request.form.get('keypin')):
+            return makehtml(), 200, {'Content-Type': 'text/html'}
     return login, 200, {'Content-Type': 'text/html'}
 
 @app.route('/settings',methods=['POST'])
 async def settings(request:Request):
-    print(request.form)
+    # print(request.form)
     def tonone(data):
         if data == '':
             return None
@@ -140,31 +150,24 @@ async def settings(request:Request):
     if checkpin(request.form.get('keypin')) is False:
         return "Wrong pin data not saved", 200, {'Content-Type': 'text/html'}
 
-    savejson = {'users':[],'sensors':{}}
+    savejson = {'users':{},'sensors':{}}
 
     for k,v in request.form.items():
         k:str
         if k.startswith('user'):
-            if k.startswith('username_'):
-                name = tonone(v[0])
-                if name is None:
-                    continue
-                usercount = k.split('_')[1]
-                def admin(admin):
-                    if admin: return True
-                    return admin
-                user = {'pin': request.form.get('userkey_'+usercount), 
-                        'name': name, 
-                        'phonenr': tonone(request.form.get('userphone_'+usercount)), 
-                        'admin': admin(request.form.get('useradmin_'+usercount,False))}
-                savejson['users'] = savejson['users'] + [user]
+            if v[0] == '' or v[1] == '':
+                continue
+            admin = False
+            if len(v) == 4: # has admin checked
+                admin = True  
+            savejson['users'][v[1]] = {"name": v[0],"phonenr": tonone(v[2]),"admin": admin}
+        
         elif k.startswith('sensor'):
-            savejson['sensors'][k] = tonone(v[0])
+            savejson['sensors'][k.replace('sensor','')] = tonone(v[0])
         elif k == 'keypin':
             pass
         else:
             savejson[k] = tonone(tonumber(v[0]))
-    print(savejson)
     with open('settings.json','w') as file:
         file.write(json.dumps(savejson))
     request.app.shutdown()
