@@ -1,4 +1,4 @@
-# VERSION 0.55
+# VERSION 0.56
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/main.py
 
 from machine import Pin, reset
@@ -210,7 +210,7 @@ if dipswitch[4].value() == 0:
             for values in localdata.USERS.values():
                 if values['admin'] is True:
                     logger(f'sendalarm to {values['phonenr']}')
-                    await self.sendmessage(f"Alarm trigged on {localdata.SENSORS[whichpin]}",values['phonenr'])
+                    await self.sendmessage(f"Alarm trigged on {localdata.SENSORS[str(whichpin)]}",values['phonenr'])
                     await self.call(values['phonenr'])
         
         async def sendmessage(self,message,number):
