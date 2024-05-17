@@ -222,15 +222,16 @@ if dipswitch[4].value() == 0:
                 'to':number,
                 'text':message
             }
-            try:
-                res = await aiourlrequest.post(
-                    localdata.TELNYXPOSTURL+'messages',
-                    json=message,
-                    headers=localdata.TELNYXPOSTHEADER,
-                    readlimit=50)
-                logger(res.text)
-            except Exception as e:
-                logger(e)
+            if wifi.connect():
+                try:
+                    res = await aiourlrequest.post(
+                        localdata.TELNYXPOSTURL+'messages',
+                        json=message,
+                        headers=localdata.TELNYXPOSTHEADER,
+                        readlimit=50)
+                    logger(res.text)
+                except Exception as e:
+                    logger(e)
             gc.collect()
 
         async def call(self,number):
@@ -242,15 +243,16 @@ if dipswitch[4].value() == 0:
                 'time_limit_secs': 30,
                 'audio_url': localdata.ALARMAUDIO
             }
-            try:
-                res = await aiourlrequest.post(
-                    localdata.TELNYXPOSTURL+'calls',
-                    json=message,
-                    headers=localdata.TELNYXPOSTHEADER,
-                    readlimit=50)
-                logger(res.text)
-            except Exception as e:
-                logger(e)
+            if wifi.connect():
+                try:
+                    res = await aiourlrequest.post(
+                        localdata.TELNYXPOSTURL+'calls',
+                        json=message,
+                        headers=localdata.TELNYXPOSTHEADER,
+                        readlimit=50)
+                    logger(res.text)
+                except Exception as e:
+                    logger(e)
             gc.collect()
         
         async def scansensors(self) -> None|int:
@@ -357,6 +359,8 @@ if dipswitch[4].value() == 0:
             while True:
                 checksleep = 30
                 try:
+                    if wifi.connect() is False:
+                        continue
                     res = await aiourlrequest.aiourlrequest(localdata.TELNYXGETURL)
                     res = res.json()
                     res = res.get('content',None)
@@ -394,9 +398,9 @@ if dipswitch[4].value() == 0:
                     logger(e) # connection and json issues
                     pass
                 finally:
-                    await asyncio.sleep(checksleep)
                     gc.collect()
-                        
+                    await asyncio.sleep(checksleep)
+
         async def main(self):
             try:
                 with open('last','r') as file:
