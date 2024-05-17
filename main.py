@@ -56,6 +56,7 @@ if dipswitch[1].value() == 0:
                 localdata.WIFILED,
                 localdata.WIFITIMEOUT)
     wifi.connect()
+    wifi.timeout = 0
 
     if wifi.isconnected():
         try:
