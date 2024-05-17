@@ -20,6 +20,7 @@
       "1234": {"name": "Testuser","phonenr": "+19055555555","admin": false},
       "4321": {"name": "Test Admin","phonenr": "+190555555551","admin": true}
     },
+    "keypad": "4x4",
     "beeppin": 10,
     "greenled": 9,
     "redled": 8,

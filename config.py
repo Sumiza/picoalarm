@@ -40,6 +40,7 @@ class Localsettings():
             self.PINTIME = jfile.get('pintime')
             self.DOORDING = jfile.get('doording')
             self.USERS = jfile.get('users')
+            self.KEYPAD = jfile.get('keypad')
 
             self.TELNYXFROMNUMBER = jfile.get('telyxfromnumber')
             self.TELNYXCALLID = jfile.get('telnyxcallid')
@@ -118,6 +119,7 @@ def makehtml():
             <br> <label for="">Green LED: </label><br><input name="greenled" type="number" placeholder="16" value={ifnone(localdata.GREENLED)}>
             <br> <label for="">Horn Pin: </label><br><input name="hornpin" type="number" placeholder="16" value={ifnone(localdata.HORNPIN)}>
             <br> <label for="">Beep Pin: </label><br><input name="beeppin" type="number" placeholder="16" value={ifnone(localdata.BEEPPIN)}>
+            <br> <label for="">Keypad Type: </label><br><input name="keypad" type="text" placeholder="4x4" value={ifnone(localdata.KEYPAD)}>
 
         <br><br>
         <br> <label for="">PIN: </label><input name="keypin" type="text" placeholder="1234" required><br><br>

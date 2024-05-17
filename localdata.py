@@ -1,4 +1,5 @@
-
+# VERSION 0.1
+# URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/localdata.py
 # for updater
 
 INSTALLFILES = [

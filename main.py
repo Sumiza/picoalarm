@@ -23,6 +23,7 @@ class LocalSettings():
             self.PINTIME = jfile.get('pintime')
             self.DOORDING = jfile.get('doording')
             self.USERS = jfile.get('users')
+            self.KEYPAD = jfile.get('keypad')
 
             self.TELNYXFROMNUMBER = jfile.get('telyxfromnumber')
             self.TELNYXCALLID = jfile.get('telnyxcallid')
@@ -433,5 +434,5 @@ if dipswitch[4].value() == 0:
                         reset() # something went very wrong
                 await asyncio.sleep(5)
 
-    alarm = Alarm('4x4')
+    alarm = Alarm(localdata.KEYPAD)
     asyncio.run(alarm.main())
