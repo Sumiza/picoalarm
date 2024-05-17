@@ -1,4 +1,4 @@
-# VERSION 0.58
+# VERSION 0.59
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/main.py
 
 from machine import Pin, reset
@@ -223,17 +223,7 @@ if dipswitch[4].value() == 0:
                 'to':number,
                 'text':message
             }
-            if wifi.connect():
-                try:
-                    res = await aiourlrequest.post(
-                        localdata.TELNYXPOSTURL+'messages',
-                        json=message,
-                        headers=localdata.TELNYXPOSTHEADER,
-                        readlimit=50)
-                    logger(res.text)
-                except Exception as e:
-                    logger(e)
-            gc.collect()
+            await self.postrequest(message,'messages')
 
         async def call(self,number):
             logger(f'trigger call {number}')
@@ -244,18 +234,21 @@ if dipswitch[4].value() == 0:
                 'time_limit_secs': 30,
                 'audio_url': localdata.ALARMAUDIO
             }
+            await self.postrequest(message,'calls')
+
+        async def postrequest(self,message,type):
             if wifi.connect():
                 try:
                     res = await aiourlrequest.post(
-                        localdata.TELNYXPOSTURL+'calls',
+                        localdata.TELNYXPOSTURL+type,
                         json=message,
                         headers=localdata.TELNYXPOSTHEADER,
                         readlimit=50)
                     logger(res.text)
                 except Exception as e:
-                    logger(e)
+                    logger(f"post error {e}")
             gc.collect()
-        
+
         async def scansensors(self) -> None|int:
             for pin, pinvalue in self.sensorpins.items():
                 if pinvalue.value() == 1:
