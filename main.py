@@ -1,4 +1,4 @@
-# VERSION 1.00
+# VERSION 1.01
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/main.py
 
 from machine import Pin, reset
@@ -417,7 +417,7 @@ if dipswitch[4].value() == 0:
 
             logger(f"Starting {self.armed}")
 
-            gc.set_threshold(gc.mem_free() // 4 + gc.mem_alloc())
+            gc.threshold(gc.mem_free() // 4 + gc.mem_alloc())
 
             running = list()
             running.append(asyncio.create_task(self.getsms()))
