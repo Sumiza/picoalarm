@@ -8,3 +8,5 @@ upload.py
 wifi.py
 .gitignore
 tests/
+aioUrlRequest.py
+.gitignore

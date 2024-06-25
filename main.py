@@ -244,7 +244,8 @@ if dipswitch[4].value() == 0:
                         localdata.TELNYXPOSTURL+type,
                         json=message,
                         headers=localdata.TELNYXPOSTHEADER,
-                        readlimit=50)
+                        readlimit=50,
+                        timeout=10)
                     logger(res.text)
                 except Exception as e:
                     logger(f"post error {e}")
@@ -356,7 +357,10 @@ if dipswitch[4].value() == 0:
                 try:
                     if wifi.connect() is False:
                         continue
-                    res = await aiourlrequest.aiourlrequest(localdata.TELNYXGETURL)
+                    res = await aiourlrequest.get(
+                                            localdata.TELNYXGETURL,
+                                            readlimit=5000,
+                                            timeout=10)
                     res = res.json()
                     res = res.get('content',None)
                     logger(res)
