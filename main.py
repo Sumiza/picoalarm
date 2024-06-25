@@ -1,4 +1,4 @@
-# VERSION 0.59
+# VERSION 1.00
 # URL https://raw.githubusercontent.com/Sumiza/picoalarm/main/main.py
 
 from machine import Pin, reset
@@ -94,7 +94,7 @@ if dipswitch[4].value() == 0:
     from matrixkeypad import MatrixKeypad
     import gc
 
-    level = 1
+    level = None
     def logger(data):
         if level is None or level == 0:
             return
@@ -391,7 +391,6 @@ if dipswitch[4].value() == 0:
 
                 except Exception as e:
                     logger(e) # connection and json issues
-                    pass
                 finally:
                     gc.collect()
                     await asyncio.sleep(checksleep)
@@ -413,6 +412,8 @@ if dipswitch[4].value() == 0:
                 self.last = 'No last status found'
 
             logger(f"Starting {self.armed}")
+
+            gc.set_threshold(gc.mem_free() // 4 + gc.mem_alloc())
 
             running = list()
             running.append(asyncio.create_task(self.getsms()))
